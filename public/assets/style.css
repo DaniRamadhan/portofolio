@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;600;700&display=swap');
+* {
+    box-sizing: border-box;
+}
+body{
+    background-color: rgb(240, 238, 238);
+    padding: 0;
+    margin: 0;
+    font-size: 1.1em;
+}
+/* header design*/
+nav{
+    position: sticky;
+    top: 0;
+    left: 0;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+    width: 100%;
+    padding:15px;
+    background-color:rgb(156, 72, 235);  
+}
+.kop{
+    letter-spacing: 1em;
+    display: inline;
+    color: white;
+    font-variant: small-caps;
+    text-decoration: underline;
+}
+.ramah{
+    display: grid;
+    float:right;
+}
+.ramah-value{
+    font-family: "comfortaa" ,sans-serif;
+    border-radius: 5px;
+    background-color: rgb(156, 72, 235);
+    color: white;
+    font-weight: bold;
+    text-transform: capitalize;
+    display: inline;
+    padding: 10px;
+    margin: 0; 
+    box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.3);
+    font-weight: 700;    
+}
+
+/* button Design */
+.btn-certivication{
+    width: 100%;
+    padding: 1em;
+}
+
+.button{
+    width: 100%;
+    font-family: "comfortaa" ,sans-serif;
+    padding: 1em;
+    background-color: coral;
+}
+.button:hover{
+    background-color: darksalmon;
+}
+/* main design */
+
+main{
+    overflow: auto;
+}
+.card{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    padding: 1em;
+    background-color: white;
+    overflow: auto;
+}
+.judul{
+    font-weight: 700;
+    font-family: "comfortaa";
+}
+    
+    /*article design*/
+        .article-page{
+            margin-top: 1em;
+            width: 72%;
+            float: left;
+            margin-bottom: 1em;
+            margin-left: 15px;
+            font-family: "comfortaa";
+        }
+        .sekolah{
+            max-width: 250px;
+            border-radius: 5px;
+            float: left;
+            margin-top: 15px;
+            padding: 10px;
+        }
+        .paragraf{
+            line-height: 2;
+            text-align: justify;
+            font-weight: 300;
+        }
+        .konten-hidden{
+            display: none;
+        }
+        .konten-hidden3{
+            display: none;
+        }
+        #konten-sekolah{
+            cursor: pointer;
+            color: red;
+            text-decoration: underline;   
+        }
+        .ribet3{
+            cursor: pointer;
+            color: red;
+            text-decoration : underline;
+        }
+    /*aside design*/
+        aside{
+            margin-top: 1em;
+            float: right;
+            width: 23%;
+            margin-right: 2em;
+            margin-bottom: 1em;
+            font-family: "comfortaa";
+            text-align: center;
+        }
+        .profile-img{
+            
+            border-radius:20em; 
+            max-width: 200px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+            padding: 1em;
+            background-color: white;
+        }
+        .trought{
+            max-width: 250px;
+        }
+        .trought:hover{
+            cursor: pointer;
+        }
+        .konten-hidden2{
+            display: none;
+            text-align: center;
+        }
+        .table{
+            width: 100%;
+            text-align: center;
+            padding-top: 2em;
+            line-height: 3em;
+        }
+
+
+/*footer design*/
+
+footer{
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    vertical-align: middle;
+    text-align: center;
+    background-color: violet;
+
+}
+.conta-img{
+    display: inline;
+}
+.med-img{
+    margin-top:20px;
+    max-width: 50px;
+    color: black;
+}
+.copyright{
+    box-shadow: black;
+    font-family: "comfortaa";
+    font-weight: 700;
+    position: relative;
+    margin: 0;
+    padding:15px;
+}
+
+
+
+
+/* rules*/
+@media screen and (max-width: 1000px) {
+    .article-page,
+    aside {
+        width: 100%;
+        margin: 0 ;       
+    }
+    .center-image{
+        vertical-align: middle;
+        text-align: center;
+    }
+ }
