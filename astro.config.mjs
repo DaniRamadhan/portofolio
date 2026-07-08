@@ -6,8 +6,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  // TODO: ganti dengan domain final kamu (dipakai untuk sitemap & canonical URL)
-  site: 'https://portfolio.pages.dev',
+  // Domain untuk sitemap & canonical URL (ganti bila pakai domain custom nanti)
+  site: 'https://daniramadhan.pages.dev',
   integrations: [mdx(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
