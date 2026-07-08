@@ -1,0 +1,141 @@
+---
+import "@fontsource-variable/manrope";
+import "@fontsource/jetbrains-mono/500.css";
+import "@fontsource/jetbrains-mono/600.css";
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Portfolio",
+  description = "Software Engineer — membangun produk web yang cepat, rapi, dan bermanfaat.",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#0163EA" />
+    <script is:inline>
+      // Tandai JS aktif agar CSS bisa menyembunyikan elemen reveal sebelum GSAP jalan
+      // (tanpa JS, konten tetap tampil).
+      document.documentElement.classList.add("js");
+    </script>
+  </head>
+  <body>
+    <div class="scroll-progress" id="scroll-progress"></div>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import gsap from "gsap";
+      import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const items = gsap.utils.toArray<HTMLElement>(".reveal");
+
+      try {
+      if (reduce) {
+        gsap.set(items, { opacity: 1, clearProps: "transform" });
+      } else {
+        // Reveal berarah + stagger via ScrollTrigger
+        items.forEach((el) => {
+          const dir = el.dataset.reveal;
+          const init: gsap.TweenVars = { opacity: 0 };
+          if (dir === "left") init.x = -46;
+          else if (dir === "right") init.x = 46;
+          else if (dir === "scale") init.scale = 0.94;
+          else init.y = 32;
+          gsap.set(el, init);
+
+          const delay = (parseFloat(el.style.getPropertyValue("--reveal-delay")) || 0) / 1000;
+          ScrollTrigger.create({
+            trigger: el,
+            start: "top 88%",
+            once: true,
+            onEnter: () =>
+              gsap.to(el, {
+                opacity: 1,
+                x: 0,
+                y: 0,
+                scale: 1,
+                duration: 0.85,
+                ease: "power3.out",
+                delay,
+                overwrite: "auto",
+              }),
+          });
+        });
+
+        // Parallax lembut pada glow & watermark paus
+        gsap.utils.toArray<HTMLElement>(".ocean-glow").forEach((g) => {
+          if (!g.parentElement) return;
+          gsap.to(g, {
+            yPercent: 26,
+            ease: "none",
+            scrollTrigger: {
+              trigger: g.parentElement,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 0.6,
+            },
+          });
+        });
+        const whale = document.querySelector<HTMLElement>('#venture img[aria-hidden="true"]');
+        if (whale) {
+          gsap.to(whale, {
+            yPercent: 16,
+            rotate: 8,
+            ease: "none",
+            scrollTrigger: { trigger: "#venture", start: "top bottom", end: "bottom top", scrub: 0.6 },
+          });
+        }
+
+        // Hitung ulang trigger setelah gambar/aset selesai
+        window.addEventListener("load", () => ScrollTrigger.refresh());
+      }
+      } catch (err) {
+        // Bila GSAP gagal, pastikan semua konten tetap tampil
+        console.error("Motion init gagal:", err);
+        gsap.set(items, { opacity: 1, clearProps: "transform" });
+      }
+
+      // Progress bar scroll
+      const bar = document.getElementById("scroll-progress");
+      const onScroll = () => {
+        const h = document.documentElement;
+        const max = h.scrollHeight - h.clientHeight;
+        const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+        if (bar) bar.style.width = pct + "%";
+      };
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+    </script>
+  </body>
+</html>

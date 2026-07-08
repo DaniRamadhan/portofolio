@@ -1,0 +1,487 @@
+---
+// =====================================================================
+// Timeline.astro — "Journey" pengalaman & proyek dalam tata letak zig-zag
+// dengan garis progress GSAP (scaleY, scrub) + fade-in kartu + dot aktif.
+//
+// Komponen ini SENGAJA self-contained (data, ikon, style, script) agar
+// modular & mudah kamu adaptasi ke tema 3D. Semua class ber-namespace `tl-`.
+// Hook tema 3D ditandai dengan komentar `3D-HOOK`.
+// =====================================================================
+
+// --- Warna brand teknologi untuk tag (boleh kamu override di tema) ---
+const TECH: Record<string, string> = {
+  Angular: "#DD0031",
+  TypeScript: "#3178C6",
+  "Spring Boot": "#6DB33F",
+  PostgreSQL: "#336791",
+  "Apache Kafka": "#111827",
+  "Bootstrap 5": "#7952B3",
+  Astro: "#FF5D01",
+  "Tailwind CSS": "#06B6D4",
+  GSAP: "#0AE448",
+};
+const chip = (t: string) => {
+  const c = TECH[t] ?? "#0163EA";
+  return `background:${c}12;color:${c};border-color:${c}33`;
+};
+
+// --- DATA: gabungan pengalaman kerja & proyek (urut terbaru → lama) ---
+// TODO(dani): sesuaikan `waktu` dengan tahun sebenarnya.
+interface JourneyItem {
+  tipe: "kerja" | "proyek";
+  waktu: string;
+  judul: string;
+  organisasi: string;
+  client?: string;
+  deskripsi: string;
+  tech: string[];
+  links: { github?: string; linkedin?: string; liveLink?: string };
+}
+
+const journey: JourneyItem[] = [
+  {
+    tipe: "proyek",
+    waktu: "2026",
+    judul: "Portfolio Website",
+    organisasi: "Proyek Pribadi",
+    deskripsi:
+      "Situs portofolio ini — dibangun dengan Astro, Tailwind, dan animasi scroll GSAP. Fokus pada performa (skor Lighthouse tinggi) dan desain yang bersih.",
+    tech: ["Astro", "TypeScript", "Tailwind CSS", "GSAP"],
+    links: {
+      github: "https://github.com/DaniRamadhan",
+      liveLink: "", // TODO: isi URL setelah deploy ke Cloudflare Pages
+    },
+  },
+  {
+    tipe: "kerja",
+    waktu: "2022 — 2023",
+    judul: "Project-Based Fullstack Developer",
+    organisasi: "PT. Aplika Nusa Lintasarta",
+    client: "KFC Indonesia",
+    deskripsi:
+      "Ditempatkan di klien KFC Indonesia untuk mengembangkan aplikasi pengelolaan rantai pasok (supply chain) di seluruh gerai KFC di Indonesia.",
+    tech: ["Angular", "Spring Boot", "PostgreSQL"],
+    links: { linkedin: "https://www.linkedin.com/in/muhammad-dani-ramadhan-645356203/" },
+  },
+  {
+    tipe: "kerja",
+    waktu: "2021 — 2022",
+    judul: "Freelance Software Developer",
+    organisasi: "PT. Pelita Teknologi Global",
+    client: "Bank Central Asia (BCA)",
+    deskripsi:
+      "Membangun New Audit Management System (new AMS) — perangkat lunak yang memenuhi kebutuhan tim audit agar sesuai aturan perusahaan sekaligus mengontrol kinerja perusahaan.",
+    tech: ["Angular", "Spring Boot", "PostgreSQL"],
+    links: { linkedin: "https://www.linkedin.com/in/muhammad-dani-ramadhan-645356203/" },
+  },
+  {
+    tipe: "kerja",
+    waktu: "2020 — 2021",
+    judul: "Freelance Software Developer",
+    organisasi: "PT. Cipta Srigati Lestari",
+    client: "Bank Central Asia (BCA)",
+    deskripsi:
+      "Membangun Outward Remittance (OR) — sistem yang menangani dan menghubungkan transaksi dari bank domestik ke bank luar negeri untuk salah satu bank swasta terbesar di Indonesia.",
+    tech: ["Angular", "Spring Boot", "PostgreSQL", "Apache Kafka"],
+    links: { linkedin: "https://www.linkedin.com/in/muhammad-dani-ramadhan-645356203/" },
+  },
+];
+---
+
+<section id="experience" class="tl-section">
+  <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+    <p class="tl-eyebrow">Perjalanan</p>
+    <h2 class="tl-title">Pengalaman &amp; proyek</h2>
+    <p class="tl-subtitle">Jejak membangun sistem enterprise untuk perbankan &amp; retail nasional.</p>
+
+    <!-- .tl-wrap = kontainer utama timeline -->
+    <div class="tl-wrap">
+      <!-- Garis utama + progress line (digerakkan GSAP scaleY) -->
+      <div class="tl-line" aria-hidden="true">
+        <span class="tl-progress"></span>
+      </div>
+
+      {
+        journey.map((item, i) => (
+          <article
+            class:list={["tl-item", i % 2 === 0 ? "tl-item--left" : "tl-item--right"]}
+            data-tipe={item.tipe}
+          >
+            <!-- Titik penanda pada garis -->
+            <span class="tl-dot" aria-hidden="true" />
+
+            <!-- Kartu konten (3D-HOOK: styling kartu utama) -->
+            <div class="tl-card">
+              <header class="tl-card__head">
+                <span class="tl-badge">{item.tipe === "kerja" ? "Pengalaman" : "Proyek"}</span>
+                <time class="tl-time">{item.waktu}</time>
+              </header>
+
+              <h3 class="tl-card__title">{item.judul}</h3>
+              <p class="tl-card__org">
+                {item.organisasi}
+                {item.client && <span class="tl-card__client"> · {item.client}</span>}
+              </p>
+
+              <p class="tl-card__desc">{item.deskripsi}</p>
+
+              {item.tech.length > 0 && (
+                <ul class="tl-tags">
+                  {item.tech.map((t) => (
+                    <li class="tl-tag" style={chip(t)}>
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {/* Ikon tautan luar (inline SVG — tanpa library, 3D-HOOK: .tl-icon) */}
+              {(item.links.github || item.links.linkedin || item.links.liveLink) && (
+                <div class="tl-links">
+                  {item.links.github && (
+                    <a class="tl-icon tl-icon--github" href={item.links.github} target="_blank" rel="noopener noreferrer" aria-label="Kode di GitHub">
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.776.417-1.305.76-1.605-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.5 11.5 0 013.003-.404c1.018.005 2.045.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.653.244 2.874.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .319.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                      </svg>
+                    </a>
+                  )}
+                  {item.links.linkedin && (
+                    <a class="tl-icon tl-icon--linkedin" href={item.links.linkedin} target="_blank" rel="noopener noreferrer" aria-label="Profil LinkedIn">
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    </a>
+                  )}
+                  {item.links.liveLink && (
+                    <a class="tl-icon tl-icon--external" href={item.links.liveLink} target="_blank" rel="noopener noreferrer" aria-label="Live demo">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" />
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ================= Kepala section ================= */
+  .tl-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+  .tl-title {
+    margin-top: 0.75rem;
+    font-size: clamp(1.5rem, 3vw, 1.875rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .tl-subtitle {
+    margin-top: 0.6rem;
+    max-width: 40rem;
+    color: var(--color-slate);
+  }
+
+  /* ================= Kontainer & garis ================= */
+  /* 3D-HOOK: --tl-line & --tl-accent bisa kamu override per tema */
+  .tl-wrap {
+    --tl-line: rgba(1, 99, 234, 0.14);
+    --tl-accent: var(--color-primary);
+    position: relative;
+    margin-top: 3rem;
+  }
+
+  .tl-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    transform: translateX(-50%);
+    background: var(--tl-line);
+    border-radius: 2px;
+  }
+  /* progress line dinamis (scaleY 0 → 1 via GSAP) */
+  .tl-progress {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    border-radius: 2px;
+    background: linear-gradient(to bottom, var(--color-primary), var(--color-accent));
+    transform: scaleY(0);
+    transform-origin: top center;
+  }
+
+  /* ================= Item & sisi zig-zag ================= */
+  .tl-item {
+    position: relative;
+    width: 50%;
+    box-sizing: border-box;
+    padding: 0.75rem 2.75rem 2rem;
+  }
+  .tl-item--left {
+    left: 0;
+    text-align: right;
+  }
+  .tl-item--right {
+    left: 50%;
+    text-align: left;
+  }
+
+  /* Titik penanda pada garis tengah */
+  /* 3D-HOOK: .tl-dot — beri efek timbul/gloss di tema 3D */
+  .tl-dot {
+    position: absolute;
+    top: 1.6rem;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid var(--tl-accent);
+    z-index: 2;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease,
+      background 0.3s ease;
+  }
+  .tl-item--left .tl-dot {
+    right: -8px;
+  }
+  .tl-item--right .tl-dot {
+    left: -8px;
+  }
+  /* status aktif saat dilewati progress line */
+  .tl-item.is-active .tl-dot {
+    background: var(--tl-accent);
+    transform: scale(1.25);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--tl-accent) 18%, transparent);
+  }
+
+  /* warna aksen per tipe */
+  .tl-item[data-tipe="kerja"] {
+    --tl-accent: #0163ea;
+  }
+  .tl-item[data-tipe="proyek"] {
+    --tl-accent: #7c3aed;
+  }
+
+  /* ================= Kartu ================= */
+  /* 3D-HOOK: .tl-card — kandidat utama untuk efek 3D (transform, shadow) */
+  .tl-card {
+    display: inline-block;
+    width: 100%;
+    max-width: 30rem;
+    text-align: left;
+    padding: 1.25rem 1.4rem;
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow:
+      0 1px 2px rgba(14, 26, 43, 0.04),
+      0 12px 32px -18px rgba(14, 26, 43, 0.18);
+    /* dikontrol GSAP: opacity via html.js gate + transform */
+  }
+  .tl-item--left .tl-card {
+    margin-left: auto;
+  }
+
+  .tl-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .tl-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.4rem;
+    color: var(--tl-accent);
+    background: color-mix(in srgb, var(--tl-accent) 12%, transparent);
+  }
+  .tl-time {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-slate);
+    font-variant-numeric: tabular-nums;
+  }
+  .tl-card__title {
+    margin-top: 0.7rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+  .tl-card__org {
+    margin-top: 0.15rem;
+    font-size: 0.85rem;
+    color: var(--color-slate);
+  }
+  .tl-card__client {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .tl-card__desc {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-slate);
+  }
+
+  .tl-tags {
+    margin-top: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tl-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.15rem 0.55rem;
+    border: 1px solid;
+    border-radius: 0.4rem;
+  }
+
+  /* Ikon tautan */
+  .tl-links {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  /* 3D-HOOK: .tl-icon — beri efek tombol 3D di tema kamu */
+  .tl-icon {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line);
+    color: var(--color-slate);
+    background: #fff;
+    transition:
+      transform 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .tl-icon svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  .tl-icon:hover {
+    transform: translateY(-2px);
+    color: var(--tl-accent);
+    border-color: color-mix(in srgb, var(--tl-accent) 45%, transparent);
+  }
+
+  /* ================= Anti-FOUC (GSAP yang mengontrol reveal) ================= */
+  :global(html.js) .tl-card {
+    opacity: 0;
+  }
+
+  /* ================= Responsif: garis pindah ke kiri, kartu menumpuk ================= */
+  @media (max-width: 767px) {
+    .tl-line {
+      left: 7px;
+      transform: none;
+    }
+    .tl-item,
+    .tl-item--left,
+    .tl-item--right {
+      width: 100%;
+      left: 0;
+      text-align: left;
+      padding: 0.5rem 0 1.75rem 2.25rem;
+    }
+    .tl-item--left .tl-dot,
+    .tl-item--right .tl-dot {
+      left: 0;
+      right: auto;
+    }
+    .tl-item--left .tl-card {
+      margin-left: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .tl-card {
+      opacity: 1;
+    }
+    .tl-progress {
+      transform: scaleY(1);
+    }
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const wrap = document.querySelector(".tl-wrap");
+  const cards = gsap.utils.toArray<HTMLElement>(".tl-card");
+  const itemsEls = gsap.utils.toArray<HTMLElement>(".tl-item");
+
+  try {
+    if (reduce || !wrap) {
+      gsap.set(cards, { opacity: 1, y: 0 });
+      itemsEls.forEach((it) => it.classList.add("is-active"));
+    } else {
+      // 1) Garis progress memanjang mengikuti scroll (scrub)
+      gsap.to(".tl-progress", {
+        scaleY: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: wrap,
+          start: "top 60%",
+          end: "bottom 75%",
+          scrub: true,
+        },
+      });
+
+      // 2) Tiap kartu fade-in + dot berubah status saat dilewati
+      itemsEls.forEach((item) => {
+        const card = item.querySelector(".tl-card");
+        gsap.set(card, { opacity: 0, y: 42 });
+
+        gsap.to(card, {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: item,
+            start: "top 82%",
+            toggleActions: "play none none reverse",
+          },
+        });
+
+        // status dot: aktif ketika progress line melewati item
+        ScrollTrigger.create({
+          trigger: item,
+          start: "top 60%",
+          end: "bottom 60%",
+          onToggle: (self) => item.classList.toggle("is-active", self.isActive),
+        });
+      });
+
+      window.addEventListener("load", () => ScrollTrigger.refresh());
+    }
+  } catch (err) {
+    console.error("Timeline motion gagal:", err);
+    gsap.set(cards, { opacity: 1, y: 0 });
+  }
+</script>

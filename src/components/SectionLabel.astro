@@ -1,0 +1,22 @@
+---
+// Eyebrow/label section dengan warna aksen yang bisa berbeda tiap section
+// supaya halaman tidak monoton.
+interface Props {
+  text: string;
+  color?: string;
+}
+const { text, color = "#0163EA" } = Astro.props;
+---
+
+<div class="reveal flex items-center gap-3">
+  <span
+    class="h-px w-8 rounded-full"
+    style={`background:linear-gradient(to right, ${color}, ${color}55)`}
+  ></span>
+  <p
+    class="text-xs font-bold uppercase tracking-[0.14em]"
+    style={`color:${color}`}
+  >
+    {text}
+  </p>
+</div>

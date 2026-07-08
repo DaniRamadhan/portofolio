@@ -1,0 +1,250 @@
+@import "tailwindcss";
+
+/* ===========================================================================
+   Ocean & Sky — executive edition (terinspirasi DigitalOcean)
+   Tipografi grotesk Manrope, border netral, banyak whitespace, warna tenang.
+   =========================================================================== */
+@theme {
+  --color-primary: #0163ea;
+  --color-primary-deep: #0149a8;
+  --color-accent: #6691f0;
+  --color-sky: #f5f8fc; /* wash section, kalem ala DO */
+  --color-line: #e6eaf1; /* border netral */
+  --color-secondary: #f43f5e;
+  --color-ink: #0e1a2b;
+  --color-slate: #55637a;
+
+  --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: -0.006em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+@supports (overflow-x: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Utility brand
+ * ------------------------------------------------------------------ */
+
+.text-gradient-ocean {
+  background-image: linear-gradient(120deg, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Eyebrow kecil uppercase (executive, bukan mono) */
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+/* Shadow halus */
+.shadow-smooth {
+  box-shadow:
+    0 1px 2px rgba(14, 26, 43, 0.04),
+    0 12px 32px -16px rgba(14, 26, 43, 0.16);
+}
+
+/* Ocean glow — subtil */
+.ocean-glow {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(100px);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Pola grid halus */
+.grid-pattern {
+  background-image:
+    linear-gradient(to right, rgba(1, 99, 234, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(1, 99, 234, 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000 40%, transparent 78%);
+  mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000 40%, transparent 78%);
+}
+
+/* Kartu hover — angkat halus + garis aksen tipis */
+.card-hover {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+/* ------------------------------------------------------------------ *
+ * Motion — reveal dikontrol GSAP + ScrollTrigger.
+ * CSS hanya menyembunyikan awal (cegah FOUC) saat JS aktif; jika JS mati
+ * konten tetap tampil.
+ * ------------------------------------------------------------------ */
+html.js .reveal {
+  opacity: 0;
+}
+.reveal {
+  will-change: opacity, transform;
+}
+
+/* Progress bar scroll (di atas halaman) */
+.scroll-progress {
+  position: fixed;
+  inset: 0 auto auto 0;
+  height: 3px;
+  width: 0;
+  z-index: 60;
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent), var(--color-secondary));
+  transition: width 0.08s linear;
+}
+
+/* Nav scroll-spy */
+.nav-link {
+  position: relative;
+  transition: color 0.2s ease;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 0;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+  transition: width 0.25s ease;
+}
+.nav-link.active {
+  color: var(--color-ink);
+}
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Header shrink/solid saat scroll */
+.site-header {
+  transition:
+    box-shadow 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+.site-header.scrolled {
+  background-color: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 6px 24px -18px rgba(14, 26, 43, 0.5);
+}
+
+/* Link editorial (contact) — panah geser saat hover */
+.link-row .arrow {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.link-row:hover .arrow {
+  transform: translateX(6px);
+}
+
+/* ------------------------------------------------------------------ *
+ * Marquee — strip teknologi berjalan
+ * ------------------------------------------------------------------ */
+.marquee {
+  display: flex;
+  overflow: hidden;
+  /* fade halus di kedua tepi */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+.marquee__track {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 1.4rem;
+  width: max-content;
+  margin: 0;
+  padding-block: 0.85rem;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  animation: marquee-scroll 38s linear infinite;
+}
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.4rem;
+}
+.marquee__dot {
+  color: color-mix(in srgb, var(--color-slate) 35%, transparent);
+}
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  html.js .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .scroll-progress {
+    display: none;
+  }
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

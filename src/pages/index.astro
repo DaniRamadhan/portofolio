@@ -1,0 +1,435 @@
+---
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import Wave from "../components/Wave.astro";
+import profileImg from "../assets/profile.jpeg";
+import SectionLabel from "../components/SectionLabel.astro";
+import Timeline from "../components/Timeline.astro";
+import HeroCinematic from "../components/HeroCinematic.astro";
+import Scene3D from "../components/Scene3D.astro";
+
+// =========================================================================
+// PALETTE — aksen semantik
+// =========================================================================
+const C = { blue: "#0163EA", emerald: "#10B981", amber: "#F59E0B", violet: "#7C3AED", rose: "#F43F5E" };
+
+const TECH = {
+  Angular: "#DD0031",
+  "Angular (TypeScript)": "#DD0031",
+  "Angular Material": "#3F51B5",
+  TypeScript: "#3178C6",
+  "Bootstrap 5": "#7952B3",
+  "Spring Boot": "#6DB33F",
+  PostgreSQL: "#336791",
+  "Apache Kafka": "#111827",
+  Vue: "#42B883",
+  Flutter: "#027DFD",
+  React: "#149ECA",
+  Tailwind: "#06B6D4",
+  MongoDB: "#47A248",
+  Oracle: "#C74634",
+  Linux: "#111827",
+  Cloud: "#0EA5E9",
+};
+const chip = (hex) => `background:${hex}12;color:${hex};border-color:${hex}33`;
+
+// =========================================================================
+// DATA
+// =========================================================================
+const profile = {
+  name: "Muhammad Dani Ramadhan",
+  role: "Full-Stack Software Engineer",
+  headline:
+    "Membangun aplikasi enterprise untuk perbankan & retail dengan Angular dan Spring Boot.",
+  bio: "Software Engineer dengan pengalaman sejak 2020 membangun aplikasi enterprise berskala besar. Terbiasa mengembangkan sistem untuk sektor perbankan (Bank Central Asia) hingga retail (KFC Indonesia) menggunakan Angular dan Spring Boot. Fokus pada solusi yang andal, skalabel, dan sesuai kebutuhan bisnis.",
+};
+
+const stack = [
+  "Angular", "TypeScript", "Spring Boot", "PostgreSQL", "Apache Kafka", "Bootstrap 5",
+  "Vue", "Flutter", "React", "Tailwind", "MongoDB", "Oracle", "Linux", "Cloud",
+];
+
+const skills = [
+  { group: "Frontend", accent: C.blue, items: ["Angular (TypeScript)", "Angular Material", "Bootstrap 5"] },
+  { group: "Backend", accent: C.emerald, items: ["Spring Boot", "PostgreSQL", "Apache Kafka"] },
+  { group: "Soft Skills", accent: C.amber, items: ["Problem Solving", "Leadership", "Teamwork", "Agile", "Adaptive", "Creativity", "Organization"] },
+];
+
+// Data pengalaman & proyek dipindah ke komponen <Timeline /> (self-contained).
+
+// Venture pribadi — produk yang dibangun sendiri sebagai founder
+const venture = {
+  company: "PT. Dico Solusi Digital",
+  project: "Dico Society",
+  role: "Founder & Full-Stack Engineer",
+  tagline: "Platform iuran digital untuk RT, RW & komunitas di Indonesia.",
+  description:
+    "Produk yang saya rancang dan bangun dari nol — menjalankan peran dari riset produk, desain, hingga pengembangan penuh. Mempermudah pengelolaan iuran komunitas agar lebih rapi dan transparan.",
+  features: [
+    "Pembayaran QRIS, Virtual Account & e-wallet",
+    "Musyawarah & voting digital",
+    "Approval pengeluaran berlapis",
+    "Laporan keuangan yang transparan",
+  ],
+  link: "https://dicosociety.com",
+};
+
+const education = [
+  { period: "2023 – sekarang", title: "S1 Teknik Informatika", place: "Universitas Al-Azhar Indonesia (Hybrid Class)" },
+  { period: "2017 – 2020", title: "Rekayasa Perangkat Lunak", place: "SMK Fatahillah Cileungsi, Jawa Barat" },
+];
+
+const certifications = [
+  {
+    group: "Dicoding Indonesia",
+    accent: C.emerald,
+    items: [
+      "Start Programming With Kotlin",
+      "Start Programming With Java",
+      "Create Progressive Web Apps",
+      "Learn SOLID Programming Principles",
+      "Android Application for Beginners",
+      "Fundamentals of Front-End Web Development",
+      "Basic Web Programming",
+    ],
+  },
+  {
+    group: "Google Cloud Platform (Coursera)",
+    accent: "#4285F4",
+    items: [
+      "Google Cloud Fundamentals: Core Infrastructure",
+      "Essential Cloud Infrastructure: Foundation",
+      "Essential Cloud Infrastructure: Core Services",
+      "Elastic Cloud Infrastructure: Scaling & Automation",
+      "Reliable Cloud Infrastructure: Design & Process",
+    ],
+  },
+];
+
+const contact = {
+  email: "muhammaddanrhamadan@gmail.com",
+  github: "https://github.com/DaniRamadhan",
+  gitlab: "https://gitlab.com/muhammaddanirhamadan",
+  linkedin: "https://www.linkedin.com/in/muhammad-dani-ramadhan-645356203/",
+};
+
+const channels = [
+  { label: "Email", value: contact.email, href: `mailto:${contact.email}`, icon: "gmail", color: "#EA4335" },
+  { label: "LinkedIn", value: "in/muhammad-dani-ramadhan", href: contact.linkedin, icon: "linkedin", color: "#0A66C2" },
+  { label: "GitHub", value: "@DaniRamadhan", href: contact.github, icon: "github", color: "#FFFFFF" },
+  { label: "GitLab", value: "@muhammaddanirhamadan", href: contact.gitlab, icon: "gitlab", color: "#FC6D26" },
+];
+---
+
+<Layout title={`${profile.name} — ${profile.role}`} description={profile.headline}>
+  <!-- ============================ HERO (cinematic + aset 3D) ============================ -->
+  <div id="top">
+    <HeroCinematic
+      kicker="Full-Stack Engineer · Founder Dico"
+      lead={profile.headline}
+      primary={{ label: "Lihat Pengalaman", href: "#experience" }}
+      secondary={{ label: "Hubungi Saya", href: "#contact" }}
+    >
+      <Scene3D slot="visual" shape="cycle" interval={5} />
+    </HeroCinematic>
+
+    <!-- Strip tech stack (marquee berjalan) -->
+    <div class="border-y border-line bg-white/60 backdrop-blur">
+      <div class="marquee">
+        <ul class="marquee__track" aria-label="Teknologi">
+          {
+            [...stack, ...stack].map((t) => (
+              <li class="marquee__item">
+                <span style={`color:${TECH[t] ?? C.blue}`}>{t}</span>
+                <span class="marquee__dot">·</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ ABOUT ============================ -->
+  <section id="about" class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+    <SectionLabel text="Tentang saya" color={C.blue} />
+    <p class="reveal mt-6 max-w-3xl text-xl font-medium leading-relaxed text-ink sm:text-2xl sm:leading-[1.5]">
+      {profile.bio}
+    </p>
+  </section>
+
+  <!-- ==================== FOUNDER / VENTURE (highlight) ==================== -->
+  <section id="venture" class="mx-auto max-w-6xl px-6 pb-6 sm:pb-10">
+    <div
+      class="reveal relative overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-br from-sky via-white to-accent/10 p-8 shadow-smooth sm:p-12"
+      data-reveal="scale"
+    >
+      <!-- watermark paus -->
+      <img
+        src="/dico-whale.svg"
+        alt=""
+        aria-hidden="true"
+        class="pointer-events-none absolute -right-12 -top-12 w-64 opacity-[0.08] sm:w-80"
+      />
+
+      <div class="relative grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+        <!-- Kiri -->
+        <div>
+          <span class="inline-flex items-center gap-2 rounded-full bg-secondary/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-secondary">
+            <span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>
+            Founder &middot; Venture
+          </span>
+
+          <div class="mt-5 flex items-center gap-3.5">
+            <img src="/dico-whale.svg" alt="Logo Dico Society" width="52" height="52" class="h-13 w-13" />
+            <div>
+              <h2 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">Dico Society</h2>
+              <p class="text-sm text-slate">{venture.role} &middot; {venture.company}</p>
+            </div>
+          </div>
+
+          <p class="mt-6 text-lg font-semibold text-ink">{venture.tagline}</p>
+          <p class="mt-3 max-w-xl leading-relaxed text-slate">{venture.description}</p>
+
+          <a
+            href={venture.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link-row mt-7 inline-flex items-center gap-2 rounded-lg bg-gradient-to-br from-primary to-primary-deep px-5 py-3 text-sm font-semibold text-white shadow-smooth transition-transform hover:-translate-y-0.5"
+          >
+            Kunjungi Dico Society
+            <span class="arrow inline-flex">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 17L17 7M9 7h8v8"></path>
+              </svg>
+            </span>
+          </a>
+        </div>
+
+        <!-- Kanan: fitur produk -->
+        <ul class="grid gap-3">
+          {
+            venture.features.map((f, i) => (
+              <li
+                class="reveal flex items-start gap-3 rounded-xl border border-line bg-white/70 px-4 py-3.5 backdrop-blur"
+                style={`--reveal-delay:${i * 80}ms`}
+              >
+                <span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                  <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 6L9 17l-5-5"></path>
+                  </svg>
+                </span>
+                <span class="text-sm font-medium text-ink">{f}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ SKILLS ============================ -->
+  <section id="skills" class="relative overflow-hidden bg-sky">
+    <Wave flip class="text-white" />
+    <div class="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+      <SectionLabel text="Keahlian" color={C.emerald} />
+      <h2 class="reveal mt-4 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+        Teknologi yang saya gunakan
+      </h2>
+      <p class="reveal mt-3 max-w-2xl text-slate">
+        Stack utama untuk membangun aplikasi enterprise dari antarmuka hingga basis data.
+      </p>
+
+      <div class="mt-10 grid gap-5 sm:grid-cols-3">
+        {
+          skills.map((s, i) => (
+            <div
+              class="card-hover reveal overflow-hidden rounded-xl border border-line bg-white p-6 shadow-smooth"
+              style={`border-top:3px solid ${s.accent};--reveal-delay:${i * 90}ms`}
+            >
+              <h3 class="flex items-center gap-2 text-base font-bold text-ink">
+                <span class="h-2 w-2 rounded-full" style={`background:${s.accent}`} />
+                {s.group}
+              </h3>
+              <ul class="mt-4 flex flex-wrap gap-2">
+                {s.items.map((item) => (
+                  <li
+                    class="rounded-md border px-2.5 py-1 font-mono text-xs font-medium"
+                    style={chip(TECH[item] ?? s.accent)}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <Wave class="text-white" />
+  </section>
+
+  <!-- ====================== EXPERIENCE & PROJECTS (timeline) ====================== -->
+  <Timeline />
+
+  <!-- ==================== EDUCATION & CERTIFICATIONS ==================== -->
+  <section id="education" class="relative overflow-hidden bg-sky">
+    <Wave flip class="text-white" />
+    <div class="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+      <SectionLabel text="Kredensial" color={C.amber} />
+      <h2 class="reveal mt-4 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+        Pendidikan &amp; sertifikasi
+      </h2>
+
+      <div class="mt-10 grid gap-5 lg:grid-cols-2">
+        <div class="reveal rounded-xl border border-line bg-white p-6 shadow-smooth sm:p-7" style={`border-top:3px solid ${C.amber}`}>
+          <h3 class="text-base font-bold text-ink">Pendidikan</h3>
+          <ol class="mt-6 space-y-6">
+            {
+              education.map((edu) => (
+                <li class="relative border-l-2 pl-5" style={`border-color:${C.amber}44`}>
+                  <span class="absolute -left-[7px] top-1.5 h-3 w-3 rounded-full" style={`background:${C.amber}`} />
+                  <p class="text-xs font-semibold tracking-wide" style={`color:${C.amber}`}>
+                    {edu.period}
+                  </p>
+                  <p class="mt-1 font-semibold text-ink">{edu.title}</p>
+                  <p class="text-sm text-slate">{edu.place}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+
+        <div class="reveal rounded-xl border border-line bg-white p-6 shadow-smooth sm:p-7">
+          <h3 class="text-base font-bold text-ink">Sertifikasi</h3>
+          <div class="mt-6 space-y-6">
+            {
+              certifications.map((cert) => (
+                <div>
+                  <p class="flex items-center gap-2 text-sm font-bold" style={`color:${cert.accent}`}>
+                    <span class="h-2 w-2 rounded-full" style={`background:${cert.accent}`} />
+                    {cert.group}
+                  </p>
+                  <ul class="mt-3 flex flex-wrap gap-2">
+                    {cert.items.map((item) => (
+                      <li class="rounded-md border px-2.5 py-1 text-xs font-medium" style={chip(cert.accent)}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    <Wave class="text-white" />
+  </section>
+
+  <!-- ============================ CONTACT (deep ocean) ============================ -->
+  <!-- transisi ombak gelap dari area terang ke section gelap -->
+  <div class="bg-white leading-none text-ink"><Wave class="text-ink" /></div>
+
+  <section id="contact" class="relative overflow-hidden bg-ink text-white">
+    <div class="ocean-glow left-[8%] top-[10%] h-72 w-72 bg-primary"></div>
+    <div class="ocean-glow right-[6%] bottom-[6%] h-72 w-72 bg-accent"></div>
+
+    <div class="mx-auto grid max-w-6xl gap-12 px-6 py-20 sm:py-28 lg:grid-cols-[1fr_1.1fr]">
+      <!-- Kiri: ajakan -->
+      <div class="reveal" data-reveal="left">
+        <div class="mb-8">
+          <div class="inline-block rounded-3xl bg-gradient-to-br from-primary to-accent p-[3px] shadow-smooth">
+            <Image
+              src={profileImg}
+              alt="Muhammad Dani Ramadhan"
+              width={520}
+              height={650}
+              class="aspect-[4/5] w-48 rounded-[calc(1.5rem-3px)] object-cover object-top sm:w-56"
+            />
+          </div>
+          <p class="mt-5 text-xl font-bold text-white">Muhammad Dani Ramadhan</p>
+          <p class="mt-0.5 text-sm text-white/55">Full-Stack Engineer · Indonesia</p>
+        </div>
+
+        <p class="text-xs font-bold uppercase tracking-[0.14em] text-accent">Kontak</p>
+        <h2 class="mt-4 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+          Mari bangun<br />sesuatu bersama.
+        </h2>
+        <p class="mt-5 max-w-md leading-relaxed text-white/60">
+          Terbuka untuk peluang kerja, kolaborasi produk, maupun proyek freelance. Balasan biasanya dalam 1×24 jam.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-white/70">
+          <span class="inline-flex items-center gap-2">
+            <span class="relative flex h-2 w-2">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
+            </span>
+            Tersedia untuk peluang baru
+          </span>
+          <span class="inline-flex items-center gap-2">
+            <svg class="h-4 w-4 text-white/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0z"></path><circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            Indonesia
+          </span>
+        </div>
+      </div>
+
+      <!-- Kanan: daftar kanal editorial -->
+      <div class="reveal" data-reveal="right">
+        <ul class="border-t border-white/10">
+          {
+            channels.map((ch, i) => (
+              <li>
+                <a
+                  href={ch.href}
+                  target={ch.href.startsWith("http") ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  class="link-row flex items-center gap-4 border-b border-white/10 py-5 transition-colors hover:border-white/30"
+                  style={`--reveal-delay:${i * 70}ms`}
+                >
+                  <span
+                    class="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/5"
+                    style={`color:${ch.color}`}
+                  >
+                    {ch.icon === "gmail" && (
+                      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-.9.732-1.636 1.636-1.636h.749L12 10.09l9.615-6.269h.749c.904 0 1.636.732 1.636 1.636z" />
+                      </svg>
+                    )}
+                    {ch.icon === "linkedin" && (
+                      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    )}
+                    {ch.icon === "github" && (
+                      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.776.417-1.305.76-1.605-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.5 11.5 0 013.003-.404c1.018.005 2.045.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.653.244 2.874.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .319.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                      </svg>
+                    )}
+                    {ch.icon === "gitlab" && (
+                      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8619.8619 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0539.8619.8619 0 0 0-.3362.405L1.4332 9.5065l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.462-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z" />
+                      </svg>
+                    )}
+                  </span>
+
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-white/40">{ch.label}</p>
+                    <p class="mt-1 truncate text-lg font-semibold text-white">{ch.value}</p>
+                  </div>
+                  <span class="arrow grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/15 text-white/70">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M7 17L17 7M9 7h8v8"></path>
+                    </svg>
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+</Layout>

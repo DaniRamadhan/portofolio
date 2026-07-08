@@ -1,0 +1,24 @@
+---
+// Pembatas gelombang laut halus antar-section.
+// flip=true untuk membalik arah gelombang.
+interface Props {
+  flip?: boolean;
+  class?: string;
+}
+const { flip = false, class: className = "" } = Astro.props;
+---
+
+<div class={`pointer-events-none w-full leading-none ${flip ? "rotate-180" : ""} ${className}`}>
+  <svg
+    viewBox="0 0 1440 120"
+    preserveAspectRatio="none"
+    class="h-[60px] w-full sm:h-[90px]"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    <path
+      fill="currentColor"
+      d="M0,64 C240,120 480,0 720,32 C960,64 1200,120 1440,72 L1440,120 L0,120 Z"
+    ></path>
+  </svg>
+</div>

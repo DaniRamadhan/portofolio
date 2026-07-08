@@ -1,0 +1,26 @@
+---
+// Halaman perbandingan bentuk 3D (bisa dihapus kapan saja).
+import Layout from "../layouts/Layout.astro";
+import Scene3D from "../components/Scene3D.astro";
+
+const shapes: Array<"blob" | "knot" | "crystal" | "globe"> = ["blob", "knot", "crystal", "globe"];
+---
+
+<Layout title="Preview — Bentuk 3D">
+  <section class="mx-auto max-w-6xl px-6 py-16">
+    <h1 class="text-2xl font-bold text-ink">Pilih bentuk aset 3D</h1>
+    <p class="mt-2 text-slate">Gerakkan mouse, lalu pilih yang paling kamu suka.</p>
+    <div class="mt-10 grid gap-6 sm:grid-cols-2">
+      {
+        shapes.map((s) => (
+          <div class="rounded-2xl border border-line bg-white p-4 shadow-smooth">
+            <div style="height:320px">
+              <Scene3D shape={s} />
+            </div>
+            <p class="mt-2 text-center font-mono text-sm font-semibold text-primary-deep">{s}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</Layout>

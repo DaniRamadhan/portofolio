@@ -1,0 +1,320 @@
+---
+// =====================================================================
+// Scene3D.astro — Aset 3D interaktif (Three.js/WebGL) untuk slot "visual".
+// Bentuk prosedural (tanpa file model), pilih via prop `shape`:
+//   • "blob"    — icosahedron organik yang bermorph
+//   • "knot"    — simpul torus metalik
+//   • "crystal" — permata faceted (octahedron)
+//   • "globe"   — jaring wireframe + inti bercahaya
+//   • "cycle"   — berganti-ganti semua bentuk di atas (transisi mulus)
+//
+// Theme-agnostic (baca --hx-accent / --hx-accent-2, fallback --color-*),
+// hormati prefers-reduced-motion, pause saat off-screen, multi-instance.
+//
+// Pakai:  <Scene3D slot="visual" shape="cycle" interval={5} />
+// =====================================================================
+
+interface Props {
+  class?: string;
+  shape?: "blob" | "knot" | "crystal" | "globe" | "cycle";
+  /** detik per bentuk saat mode cycle */
+  interval?: number;
+  accent?: string;
+  accent2?: string;
+  detail?: number;
+  particles?: number;
+}
+
+const {
+  class: className = "",
+  shape = "blob",
+  interval = 5,
+  accent = "",
+  accent2 = "",
+  detail = 6,
+  particles = 140,
+} = Astro.props;
+---
+
+<div
+  class:list={["scene3d", className]}
+  data-scene3d
+  data-shape={shape}
+  data-interval={interval}
+  data-accent={accent}
+  data-accent2={accent2}
+  data-detail={detail}
+  data-particles={particles}
+>
+  <canvas class="scene3d__canvas"></canvas>
+</div>
+
+<style>
+  .scene3d {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* 3D-HOOK: aura di belakang objek 3D */
+    filter: drop-shadow(0 30px 60px color-mix(in srgb, var(--hx-accent, #0163ea) 30%, transparent));
+  }
+  .scene3d__canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<script>
+  import * as THREE from "three";
+
+  type Kind = "blob" | "knot" | "crystal" | "globe";
+  const ALL: Kind[] = ["blob", "knot", "crystal", "globe"];
+  const smooth = (x: number) => {
+    const c = Math.min(1, Math.max(0, x));
+    return c * c * (3 - 2 * c);
+  };
+
+  interface ShapeData {
+    group: THREE.Group;
+    morphGeo: THREE.BufferGeometry | null;
+    basePos: Float32Array | null;
+    pulse: THREE.Object3D | null;
+  }
+
+  function initScene(el: HTMLElement) {
+    const canvas = el.querySelector<HTMLCanvasElement>(".scene3d__canvas");
+    if (!canvas) return;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const shapeProp = (el.dataset.shape as Kind | "cycle") || "blob";
+    const cycling = shapeProp === "cycle";
+    const interval = parseFloat(el.dataset.interval || "5");
+
+    const cssVar = (n: string) => getComputedStyle(el).getPropertyValue(n).trim();
+    const pick = (val: string, ...vars: string[]) => {
+      if (val) return val;
+      for (const v of vars) {
+        const c = cssVar(v);
+        if (c) return c;
+      }
+      return "";
+    };
+    const cAccent = new THREE.Color(pick(el.dataset.accent || "", "--hx-accent", "--color-primary") || "#0163ea");
+    const cAccent2 = new THREE.Color(pick(el.dataset.accent2 || "", "--hx-accent-2", "--color-accent") || "#6691f0");
+    const detail = Math.max(2, parseInt(el.dataset.detail || "6", 10));
+    const nParticles = Math.max(0, parseInt(el.dataset.particles || "140", 10));
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+    camera.position.set(0, 0, 4.2);
+
+    const root = new THREE.Group();
+    scene.add(root);
+
+    // ---- Builder per bentuk ----
+    function buildShape(kind: Kind): ShapeData {
+      const g = new THREE.Group();
+      const data: ShapeData = { group: g, morphGeo: null, basePos: null, pulse: null };
+      const stdMat = () => new THREE.MeshStandardMaterial({ color: cAccent, metalness: 0.4, roughness: 0.25 });
+      const shell = (radius: number, subdiv: number, octa = false) => {
+        const geo = octa
+          ? new THREE.OctahedronGeometry(radius, subdiv)
+          : new THREE.IcosahedronGeometry(radius, subdiv);
+        g.add(
+          new THREE.LineSegments(
+            new THREE.WireframeGeometry(geo),
+            new THREE.LineBasicMaterial({ color: cAccent2, transparent: true, opacity: 0.2 }),
+          ),
+        );
+      };
+
+      if (kind === "blob") {
+        const geo = new THREE.IcosahedronGeometry(1.25, detail);
+        data.morphGeo = geo;
+        data.basePos = (geo.attributes.position.array as Float32Array).slice();
+        g.add(new THREE.Mesh(geo, stdMat()));
+        shell(1.6, 2);
+      } else if (kind === "knot") {
+        g.add(new THREE.Mesh(new THREE.TorusKnotGeometry(0.82, 0.28, 190, 28), stdMat()));
+      } else if (kind === "crystal") {
+        const gem = new THREE.Mesh(
+          new THREE.OctahedronGeometry(1.35, 0),
+          new THREE.MeshStandardMaterial({ color: cAccent, metalness: 0.65, roughness: 0.12, flatShading: true }),
+        );
+        data.pulse = gem;
+        g.add(gem);
+        shell(1.85, 0, true);
+      } else {
+        g.add(
+          new THREE.LineSegments(
+            new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.5, 2)),
+            new THREE.LineBasicMaterial({ color: cAccent2, transparent: true, opacity: 0.35 }),
+          ),
+        );
+        g.add(
+          new THREE.Mesh(
+            new THREE.IcosahedronGeometry(0.62, 3),
+            new THREE.MeshStandardMaterial({
+              color: cAccent,
+              emissive: cAccent,
+              emissiveIntensity: 0.6,
+              metalness: 0.3,
+              roughness: 0.4,
+            }),
+          ),
+        );
+      }
+      return data;
+    }
+
+    const kinds: Kind[] = cycling ? ALL : [shapeProp as Kind];
+    const shapes = kinds.map(buildShape);
+    shapes.forEach((s, i) => {
+      s.group.scale.setScalar(i === 0 ? 1 : 0);
+      root.add(s.group);
+    });
+
+    // ---- Partikel (selalu tampil) ----
+    if (nParticles > 0) {
+      const pPos = new Float32Array(nParticles * 3);
+      for (let i = 0; i < nParticles; i++) {
+        const r = 1.9 + Math.random() * 1.2;
+        const th = Math.random() * Math.PI * 2;
+        const ph = Math.acos(2 * Math.random() - 1);
+        pPos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+        pPos[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th);
+        pPos[i * 3 + 2] = r * Math.cos(ph);
+      }
+      const pGeo = new THREE.BufferGeometry();
+      pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+      root.add(
+        new THREE.Points(
+          pGeo,
+          new THREE.PointsMaterial({ color: cAccent2, size: 0.035, transparent: true, opacity: 0.7 }),
+        ),
+      );
+    }
+
+    // ---- Cahaya ----
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    const key = new THREE.PointLight(cAccent2.getHex(), 60, 20);
+    key.position.set(3, 3, 4);
+    scene.add(key);
+    const rim = new THREE.PointLight(0xffffff, 40, 20);
+    rim.position.set(-4, -2, 2);
+    scene.add(rim);
+
+    // ---- Morph blob ----
+    function morph(s: ShapeData, t: number) {
+      if (!s.morphGeo || !s.basePos) return;
+      const pos = s.morphGeo.attributes.position;
+      const amp = 0.18;
+      for (let i = 0; i < pos.count; i++) {
+        const bx = s.basePos[i * 3];
+        const by = s.basePos[i * 3 + 1];
+        const bz = s.basePos[i * 3 + 2];
+        const n =
+          Math.sin(bx * 1.6 + t) * 0.5 +
+          Math.sin(by * 1.9 + t * 1.25) * 0.3 +
+          Math.sin(bz * 1.3 + t * 0.8) * 0.2;
+        const sc = 1 + amp * n;
+        pos.setXYZ(i, bx * sc, by * sc, bz * sc);
+      }
+      pos.needsUpdate = true;
+      s.morphGeo.computeVertexNormals();
+    }
+
+    function resize() {
+      const w = el.clientWidth || 1;
+      const h = el.clientHeight || 1;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    new ResizeObserver(resize).observe(el);
+
+    // ---- State cycle ----
+    let active = 0;
+    let mode: "hold" | "transition" = "hold";
+    let holdT = 0;
+    let transP = 0;
+    const transDur = 1.2;
+
+    const clock = new THREE.Clock();
+    let t = 0;
+    let raf = 0;
+    let running = false;
+
+    function frame(dt: number) {
+      t += dt;
+      root.rotation.y = t * 0.18;
+      root.rotation.x = Math.sin(t * 0.4) * 0.12;
+      root.position.y = Math.sin(t * 0.9) * 0.06;
+
+      shapes.forEach((s) => {
+        const vis = s.group.scale.x > 0.02;
+        if (vis) {
+          if (s.morphGeo) morph(s, t * 0.8);
+          if (s.pulse) s.pulse.scale.setScalar(1 + Math.sin(t * 1.4) * 0.04);
+        }
+      });
+
+      if (cycling && shapes.length > 1) {
+        if (mode === "hold") {
+          holdT += dt;
+          if (holdT > interval) {
+            mode = "transition";
+            transP = 0;
+          }
+        } else {
+          transP += dt / transDur;
+          const next = (active + 1) % shapes.length;
+          shapes[active].group.scale.setScalar(1 - smooth(transP / 0.5));
+          shapes[next].group.scale.setScalar(smooth((transP - 0.5) / 0.5));
+          if (transP >= 1) {
+            shapes[active].group.scale.setScalar(0);
+            shapes[next].group.scale.setScalar(1);
+            active = next;
+            mode = "hold";
+            holdT = 0;
+          }
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    function loop() {
+      frame(clock.getDelta());
+      raf = requestAnimationFrame(loop);
+    }
+    function start() {
+      if (running) return;
+      running = true;
+      clock.getDelta(); // buang delta besar pertama
+      if (reduce) frame(0.016);
+      else loop();
+    }
+    function stop() {
+      running = false;
+      cancelAnimationFrame(raf);
+    }
+
+    new IntersectionObserver(
+      (entries) => entries.forEach((e) => (e.isIntersecting ? start() : stop())),
+      { threshold: 0.05 },
+    ).observe(el);
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-scene3d]").forEach((el) => {
+    try {
+      initScene(el);
+    } catch (err) {
+      console.error("Scene3D gagal:", err);
+    }
+  });
+</script>

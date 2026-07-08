@@ -1,0 +1,88 @@
+---
+const name = "Muhammad Dani Ramadhan";
+const nav = [
+  { href: "#about", label: "Tentang" },
+  { href: "#venture", label: "Dico Society" },
+  { href: "#skills", label: "Keahlian" },
+  { href: "#experience", label: "Portofolio" },
+  { href: "#education", label: "Kredensial" },
+];
+const socials = [
+  { href: "https://github.com/DaniRamadhan", label: "GitHub" },
+  { href: "https://gitlab.com/muhammaddanirhamadan", label: "GitLab" },
+  { href: "https://www.linkedin.com/in/muhammad-dani-ramadhan-645356203/", label: "LinkedIn" },
+  { href: "mailto:muhammaddanrhamadan@gmail.com", label: "Email" },
+];
+const year = 2026;
+---
+
+<footer class="relative overflow-hidden bg-ink text-white/80">
+  <!-- garis aksen ombak tipis di puncak footer -->
+  <div class="h-px w-full bg-gradient-to-r from-transparent via-accent/50 to-transparent"></div>
+
+  <div class="mx-auto max-w-6xl px-6 py-14">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
+      <!-- Brand -->
+      <div>
+        <div class="flex items-center gap-2.5">
+          <svg viewBox="0 0 32 32" class="h-7 w-7 text-white" fill="currentColor" aria-hidden="true">
+            <path d="M27,3H5C3.3,3,2,4.3,2,6v15c0,1.7,1.3,3,3,3h22c1.7,0,3-1.3,3-3V6C30,4.3,28.7,3,27,3z M10.7,12.7l-3,3C7.5,15.9,7.3,16,7,16s-0.5-0.1-0.7-0.3c-0.4-0.4-0.4-1,0-1.4L8.6,12L6.3,9.7c-0.4-0.4-0.4-1,0-1.4s1-0.4,1.4,0l3,3C11.1,11.7,11.1,12.3,10.7,12.7z M17,16h-4c-0.6,0-1-0.4-1-1s0.4-1,1-1h4c0.6,0,1,0.4,1,1S17.6,16,17,16z"></path>
+            <path d="M23,28L23,28c-1.1,0-2.1-0.7-2.5-1.8c0-0.1-0.1-0.2-0.1-0.2h-8.9c0,0.1,0,0.2-0.1,0.2C11.1,27.3,10.1,28,9,28h0c-0.6,0-1,0.4-1,1s0.4,1,1,1h14c0.6,0,1-0.4,1-1S23.6,28,23,28z"></path>
+          </svg>
+          <span class="text-base font-bold text-white">{name}</span>
+        </div>
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-white/55">
+          Full-Stack Software Engineer &amp; Founder Dico Society. Membangun produk web yang andal untuk enterprise dan komunitas.
+        </p>
+        <span class="mt-5 inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-1 text-xs font-medium text-white/70">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+          Terbuka untuk peluang baru
+        </span>
+      </div>
+
+      <!-- Navigasi -->
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/40">Navigasi</p>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          {nav.map((n) => (
+            <li>
+              <a href={n.href} class="text-white/65 transition-colors hover:text-white">{n.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Terhubung -->
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/40">Terhubung</p>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          {socials.map((s) => (
+            <li>
+              <a
+                href={s.href}
+                target={s.href.startsWith("http") ? "_blank" : undefined}
+                rel="noopener noreferrer"
+                class="group inline-flex items-center gap-1.5 text-white/65 transition-colors hover:text-white"
+              >
+                {s.label}
+                <svg class="h-3 w-3 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M7 17L17 7M9 7h8v8"></path>
+                </svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row">
+      <p>&copy; {year} {name}. Dibuat dengan Astro &amp; Tailwind.</p>
+      <a href="#top" class="inline-flex items-center gap-1.5 transition-colors hover:text-white">
+        Kembali ke atas
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 19V5M5 12l7-7 7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</footer>
