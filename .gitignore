@@ -21,3 +21,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# personal drafts & archives (jangan di-publish)
+LINKEDIN.md
+*.zip

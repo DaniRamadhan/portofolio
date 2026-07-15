@@ -11,7 +11,14 @@
 // --- Warna brand teknologi untuk tag (boleh kamu override di tema) ---
 const TECH: Record<string, string> = {
   Angular: "#DD0031",
+  Vue: "#42B883",
   TypeScript: "#3178C6",
+  JavaScript: "#CA8A04",
+  Java: "#E76F00",
+  MongoDB: "#47A248",
+  DigitalOcean: "#0080FF",
+  React: "#087EA4",
+  Vite: "#646CFF",
   "Spring Boot": "#6DB33F",
   PostgreSQL: "#336791",
   "Apache Kafka": "#111827",
@@ -40,17 +47,56 @@ interface JourneyItem {
 
 const journey: JourneyItem[] = [
   {
+    tipe: "kerja",
+    waktu: "2026 — Sekarang",
+    judul: "Software Engineer",
+    organisasi: "Taiwan Mobile · Taiwan 🇹🇼",
+    deskripsi:
+      "Bergabung dengan tim engineer Indonesia untuk mendukung pengembangan aplikasi chat enterprise di Taiwan Mobile — salah satu operator telekomunikasi terbesar di Taiwan.",
+    tech: ["JavaScript", "Java", "MongoDB", "PostgreSQL"],
+    links: { linkedin: "https://www.linkedin.com/in/muhammad-dani-ramadhan-645356203/" },
+  },
+  {
     tipe: "proyek",
-    waktu: "2026",
-    judul: "Portfolio Website",
+    waktu: "2026 — Sekarang",
+    judul: "Founder & Full-Stack Engineer — Dico Society",
     organisasi: "Proyek Pribadi",
     deskripsi:
-      "Situs portofolio ini — dibangun dengan Astro, Tailwind, dan animasi scroll GSAP. Fokus pada performa (skor Lighthouse tinggi) dan desain yang bersih.",
-    tech: ["Astro", "TypeScript", "Tailwind CSS", "GSAP"],
-    links: {
-      github: "https://github.com/DaniRamadhan/portofolio",
-      liveLink: "https://daniramadhan.pages.dev",
-    },
+      "Membangun Dico Society dari nol — platform iuran digital untuk RT, RW & komunitas di Indonesia. Merancang produk, membangun frontend & backend, hingga integrasi pembayaran (QRIS, Virtual Account & e-wallet).",
+    tech: ["Angular", "Spring Boot", "PostgreSQL"],
+    links: { liveLink: "https://dicosociety.com" },
+  },
+  {
+    tipe: "kerja",
+    waktu: "2025",
+    judul: "Frontend Engineer — New Custodian System",
+    organisasi: "PT. Pelita Teknologi Global",
+    client: "Bank Central Asia (BCA)",
+    deskripsi:
+      "Melanjutkan kerja sama di BCA sebagai Frontend Engineer, terlibat dalam pengembangan New Custodian System — aplikasi custody yang dibangun secara internal bersama tim BCA untuk mendukung layanan penyimpanan & administrasi efek (kustodian) bank.",
+    tech: ["Vue", "Spring Boot"],
+    links: { linkedin: "https://www.linkedin.com/in/muhammad-dani-ramadhan-645356203/" },
+  },
+  {
+    tipe: "proyek",
+    waktu: "2025",
+    judul: "Software Developer — Purchasing App",
+    organisasi: "PT. FTS Automotive Indonesia",
+    deskripsi:
+      "Menangani proyek secara mandiri — dari pengembangan aplikasi hingga sisi bisnis: menyiapkan quotation, invoicing, dan meeting dengan klien. Melakukan setup VPS server di DigitalOcean serta membangun aplikasi purchasing pada fase awal.",
+    tech: ["React", "Vite", "Spring Boot", "PostgreSQL", "DigitalOcean"],
+    links: { linkedin: "https://www.linkedin.com/in/muhammad-dani-ramadhan-645356203/" },
+  },
+  {
+    tipe: "kerja",
+    waktu: "2024",
+    judul: "Frontend Engineer — Project BIMA",
+    organisasi: "PT. Pelita Teknologi Global",
+    client: "Bank Central Asia (BCA)",
+    deskripsi:
+      "Sebagai Frontend Engineer, mengerjakan Project BIMA — aplikasi building management internal untuk mengelola operasional gedung Bank Central Asia (BCA): perbaikan, renovasi, pemeliharaan, hingga housekeeping.",
+    tech: ["Vue", "Spring Boot"],
+    links: { linkedin: "https://www.linkedin.com/in/muhammad-dani-ramadhan-645356203/" },
   },
   {
     tipe: "kerja",

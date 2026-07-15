@@ -11,24 +11,31 @@ import Scene3D from "../components/Scene3D.astro";
 // =========================================================================
 // PALETTE — aksen semantik
 // =========================================================================
-const C = { blue: "#0163EA", emerald: "#10B981", amber: "#F59E0B", violet: "#7C3AED", rose: "#F43F5E" };
+const C = { blue: "#0163EA", emerald: "#10B981", amber: "#F59E0B", violet: "#7C3AED", rose: "#F43F5E", cyan: "#0EA5E9" };
 
 const TECH = {
   Angular: "#DD0031",
   "Angular (TypeScript)": "#DD0031",
   "Angular Material": "#3F51B5",
   TypeScript: "#3178C6",
+  JavaScript: "#CA8A04",
   "Bootstrap 5": "#7952B3",
   "Spring Boot": "#6DB33F",
+  Java: "#E76F00",
+  "REST API": "#0EA5E9",
   PostgreSQL: "#336791",
   "Apache Kafka": "#111827",
   Vue: "#42B883",
   Flutter: "#027DFD",
   React: "#149ECA",
+  Vite: "#646CFF",
   Tailwind: "#06B6D4",
   MongoDB: "#47A248",
   Oracle: "#C74634",
   Linux: "#111827",
+  Git: "#F05032",
+  DigitalOcean: "#0080FF",
+  "Google Cloud": "#4285F4",
   Cloud: "#0EA5E9",
 };
 const chip = (hex) => `background:${hex}12;color:${hex};border-color:${hex}33`;
@@ -40,18 +47,22 @@ const profile = {
   name: "Muhammad Dani Ramadhan",
   role: "Full-Stack Software Engineer",
   headline:
-    "Membangun aplikasi enterprise untuk perbankan & retail dengan Angular dan Spring Boot.",
-  bio: "Software Engineer dengan pengalaman sejak 2020 membangun aplikasi enterprise berskala besar. Terbiasa mengembangkan sistem untuk sektor perbankan (Bank Central Asia) hingga retail (KFC Indonesia) menggunakan Angular dan Spring Boot. Fokus pada solusi yang andal, skalabel, dan sesuai kebutuhan bisnis.",
+    "Membangun produk digital yang andal dan berdampak — dari antarmuka hingga basis data.",
+  bio: "Saya percaya teknologi terbaik lahir dari rasa ingin tahu dan keinginan tulus untuk membuat hidup orang lain sedikit lebih mudah. Bagi saya, setiap baris kode adalah kesempatan untuk memecahkan masalah nyata — dan itulah yang membuat saya terus belajar, membangun, dan bertumbuh. Saya selalu digerakkan oleh satu hal: menciptakan sesuatu yang benar-benar berdampak.",
 };
 
 const stack = [
-  "Angular", "TypeScript", "Spring Boot", "PostgreSQL", "Apache Kafka", "Bootstrap 5",
-  "Vue", "Flutter", "React", "Tailwind", "MongoDB", "Oracle", "Linux", "Cloud",
+  "Angular", "Vue", "React", "Vite", "TypeScript", "JavaScript", "Tailwind", "Bootstrap 5",
+  "Java", "Spring Boot", "Apache Kafka", "REST API",
+  "PostgreSQL", "MongoDB", "Oracle", "DigitalOcean", "Linux", "Git",
 ];
 
 const skills = [
-  { group: "Frontend", accent: C.blue, items: ["Angular (TypeScript)", "Angular Material", "Bootstrap 5"] },
-  { group: "Backend", accent: C.emerald, items: ["Spring Boot", "PostgreSQL", "Apache Kafka"] },
+  { group: "Frontend", accent: C.blue, items: ["Angular (TypeScript)", "Vue", "React", "Vite"] },
+  { group: "UI & Styling", accent: C.violet, items: ["Angular Material", "Tailwind", "Bootstrap 5"] },
+  { group: "Backend", accent: C.emerald, items: ["Java", "Spring Boot", "REST API", "Apache Kafka"] },
+  { group: "Database", accent: C.rose, items: ["PostgreSQL", "MongoDB", "Oracle"] },
+  { group: "DevOps & Cloud", accent: C.cyan, items: ["DigitalOcean", "Linux", "Git", "Google Cloud"] },
   { group: "Soft Skills", accent: C.amber, items: ["Problem Solving", "Leadership", "Teamwork", "Agile", "Adaptive", "Creativity", "Organization"] },
 ];
 
